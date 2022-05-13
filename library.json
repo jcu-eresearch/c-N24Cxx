@@ -1,0 +1,30 @@
+{
+    "name": "c-N24Cxx",
+    "version": "0.0.1",
+    "description": "A C library for the ON Semiconductor N24C02, N24C04, N24C08, N24C16 I2C Serial EEPROM chips.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jcu-eresearch/c-N24Cxx.git"
+    },
+    "keywords": [
+      "Data Storage"
+    ],
+    "authors": [
+      {
+        "name": "NigelB"
+      }
+    ],
+    "frameworks": [
+      "*"
+    ],
+    "dependencies": {
+    },
+    "license": "GPL-3.0",
+    "libArchive": false,
+    "build": {
+      "srcFilter": [
+        "+<*.cpp>",
+        "+<*.h>"
+      ]
+    }
+  }
