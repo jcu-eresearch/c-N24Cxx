@@ -43,7 +43,8 @@
 
 
 #define N24Cxx_PAGE_SIZE          16
-/* This section defines the masks and values for registers that MUST have certain bits set. */
+#define N24Cxx_WRITE_TIME_MS       4
+
 
 typedef uint8_t N24Cxx_addr;
 

@@ -30,7 +30,9 @@
  */
 n24cxx_status_t n24cxx_write(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t value)
 {
-
+    n24cxx_status_t result = n24cxx_write_impl(dev, address, &value, 1);
+    n24cxx_delay_ms_impl(dev, N24Cxx_WRITE_TIME_MS);
+    return result;
 };
 
 /**
@@ -42,9 +44,20 @@ n24cxx_status_t n24cxx_write(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t 
  * @param length the number of bytes to write.
  * @return n24cxxStatus_t the status of the operation.
  */
-n24cxx_status_t n24cxx_write_page(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value, size_t length)
+n24cxx_status_t n24cxx_write_block(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value, size_t length)
 {
-
+    n24cxx_status_t status = n24cxx_status_undefined;
+    for(size_t pos = 0, write_size = 0; pos < length; pos += write_size)
+    {
+        write_size = length - pos;
+        if(length > N24Cxx_PAGE_SIZE)
+        {
+            write_size = N24Cxx_PAGE_SIZE;
+        }
+        status |= n24cxx_write_impl(dev, address + pos, value + pos, write_size);
+        n24cxx_delay_ms_impl(dev, N24Cxx_WRITE_TIME_MS);
+    }
+    return status;
 };
 
 /**
@@ -57,7 +70,7 @@ n24cxx_status_t n24cxx_write_page(n24cxx_series_t *dev, N24Cxx_addr address, uin
  */
 n24cxx_status_t n24cxx_read(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value)
 {
-
+    return n24cxx_read_impl(dev, address, value, 1);
 };
 
 /**
@@ -69,9 +82,19 @@ n24cxx_status_t n24cxx_read(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *
  * @param length the number of bytes to read.
  * @return n24cxxStatus_t 
  */
-n24cxx_status_t n24cxx_read_page(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value, size_t length)
+n24cxx_status_t n24cxx_read_block(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value, size_t length)
 {
-
+    n24cxx_status_t status = n24cxx_status_undefined;
+    for(size_t pos = 0, write_size = 0; pos < length; pos += write_size)
+    {
+        write_size = length - pos;
+        if(length > N24Cxx_PAGE_SIZE)
+        {
+            write_size = N24Cxx_PAGE_SIZE;
+        }
+        status |= n24cxx_read_impl(dev, address + pos, value + pos, write_size);
+    }
+    return status;    
 };
 
 /**
@@ -85,12 +108,22 @@ size_t n24cxx_get_size(n24cxx_type_e type)
     return type;
 };
 
-__attribute__((weak))  n24cxx_status_t n24cxx_read_impl(struct max1726x_t *dev, N24Cxx_addr address, uint8_t *data, size_t length)
+__attribute__((weak))  n24cxx_status_t n24cxx_read_impl(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *data, size_t length)
 {
     return n24cxx_status_function_not_impl;
 };
 
-__attribute__((weak)) n24cxx_status_t n24cxx_write_impl(struct max1726x_t *dev, N24Cxx_addr address, uint8_t *data, size_t length)
+__attribute__((weak)) n24cxx_status_t n24cxx_write_impl(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *data, size_t length)
 {
     return n24cxx_status_function_not_impl;
 };
+
+__attribute__((weak)) void n24cxx_delay_ms_impl(n24cxx_series_t *dev, unsigned long ms)
+{
+
+}
+
+__attribute__((weak)) void n24cxx_assert_wp_pin_impl(n24cxx_series_t *dev, bool wp)
+{
+
+}

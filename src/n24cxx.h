@@ -19,10 +19,20 @@
  * 
  */
 
+#ifndef NC24CXX_H__
+#define NC24CXX_H__
+
 #include <stdlib.h>
+#include <stdbool.h>
 #include "n24cxx-defs.h"
 
-typedef enum{
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
+typedef enum
+{
    n24cxxAddress_0 = N24Cxx_ADDRESS_7_BITS_0,
    n24cxxAddress_1 = N24Cxx_ADDRESS_7_BITS_1,
    n24cxxAddress_2 = N24Cxx_ADDRESS_7_BITS_2,
@@ -31,10 +41,9 @@ typedef enum{
    n24cxxAddress_5 = N24Cxx_ADDRESS_7_BITS_5,
    n24cxxAddress_6 = N24Cxx_ADDRESS_7_BITS_6,
    n24cxxAddress_7 = N24Cxx_ADDRESS_7_BITS_7,
-
 }n24cxx_address_e;
 
-typedef enum
+typedef enum 
 {
     n24c02 = 2048,
     n24c04 = 4096,
@@ -85,7 +94,7 @@ n24cxx_status_t n24cxx_write(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t 
  * @param length the number of bytes to write.
  * @return n24cxxStatus_t the status of the operation.
  */
-n24cxx_status_t n24cxx_write_page(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value, size_t length);
+n24cxx_status_t n24cxx_write_block(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value, size_t length);
 
 /**
  * @brief Read a single byte to the specified EEPROM address.
@@ -106,7 +115,7 @@ n24cxx_status_t n24cxx_read(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *
  * @param length the number of bytes to read.
  * @return n24cxxStatus_t 
  */
-n24cxx_status_t n24cxx_read_page(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value, size_t length);
+n24cxx_status_t n24cxx_read_block(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *value, size_t length);
 
 /**
  * @brief Returns the size of the specified chip;
@@ -121,6 +130,13 @@ size_t n24cxx_get_size(n24cxx_type_e type);
 // library can compile. Any program making use of this library must provide implementations
 // of these function that perform the required actions on the specific platform.
 
-n24cxx_status_t n24cxx_read_impl(struct max1726x_t *dev, N24Cxx_addr address, uint8_t *data, size_t length);
-n24cxx_status_t n24cxx_write_impl(struct max1726x_t *dev, N24Cxx_addr address, uint8_t *data, size_t length);
+n24cxx_status_t n24cxx_read_impl(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *data, size_t length);
+n24cxx_status_t n24cxx_write_impl(n24cxx_series_t *dev, N24Cxx_addr address, uint8_t *data, size_t length);
+void            n24cxx_delay_ms_impl(n24cxx_series_t *dev, unsigned long ms);
+void            n24cxx_assert_wp_pin_impl(n24cxx_series_t *dev, bool wp);
 
+#ifdef __cplusplus
+}
+#endif /* End of CPP guard */
+
+#endif
